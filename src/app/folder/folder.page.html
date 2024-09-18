@@ -16,15 +16,116 @@
 
   <div id="container">
     <strong class="capitalize">{{ folder }}</strong>
-    <p>Explore <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <p>
+      Explore
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://ionicframework.com/docs/components"
+        >UI Components</a
+      >
+    </p>
   </div>
   <ion-list>
     <ion-item>
-      <ion-select label="Default label" placeholder="Favorite Fruit">
-        <ion-select-option value="apple">Apple</ion-select-option>
-        <ion-select-option value="banana">Banana</ion-select-option>
-        <ion-select-option value="orange">Orange</ion-select-option>
+      <ion-select label="semestre" placeholder="uno">
+        <ion-select-option value="primero">primero</ion-select-option>
+        <ion-select-option value="segundo">segundo</ion-select-option>
+        <ion-select-option value="tercero">tercero</ion-select-option>
+        <ion-select-option value="cuarto">cuarto</ion-select-option>
+        <ion-select-option value="quinto">quinto</ion-select-option>
+        <ion-select-option value="sexto">sexto</ion-select-option>
+        <ion-select-option value="septimo">septimo</ion-select-option>
+        <ion-select-option value="octavo">octavo</ion-select-option>
+        <ion-select-option value="noveno">noveno</ion-select-option>
+        <ion-select-option value="decimo">decimo</ion-select-option>
       </ion-select>
     </ion-item>
   </ion-list>
+
+  <ion-content class="ion-padding">
+    <ion-button expand="block" (click)="setOpen(true)">Registrar Materia</ion-button>
+    <ion-modal [isOpen]="isModalOpen">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Registrar Materia</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="setOpen(false)">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-content class="ion-padding">
+          <form [formGroup]="loginForm" (submit)="onLoginBtn()">
+            <ion-input
+              label="Nombre"
+              type="text"
+              formControlName="nombreMateria"
+            ></ion-input>
+            <!-- <p
+              style="color: red; text-align: right"
+              *ngIf="loginForm.get('user')?.getError('required')"
+            >
+              Campo obligatiorio
+            </p>
+            <p
+              style="color: red; text-align: right"
+              *ngIf="loginForm.get('user')?.getError('maxlength')"
+            >
+              MAxinmo 10
+            </p> -->
+            <ion-input
+              label="semestre"
+              type="number"
+              formControlName="semestre"
+            ></ion-input>
+            <!-- <p
+              style="color: red; text-align: right"
+              *ngIf="loginForm.get('pwd')?.getError('required')"
+            >
+              Campo obligatiorio
+            </p> -->
+            <ion-input
+            label="codigo"
+            type="number"
+            formControlName="codigoMateria"
+          ></ion-input>
+          <ion-input
+            label="horario"
+            type="text"
+            formControlName="horarioMateria"
+          ></ion-input>
+          <ion-input
+          label="observaciones"
+          type="text"
+          formControlName="observacionesMateria"
+        ></ion-input>
+            
+            <ion-button (click)="onLoginBtn()" [disabled]="loginForm.invalid"
+              >registrar</ion-button
+            >
+          
+          </form>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  </ion-content>
+  <!-- <form [formGroup]="loginForm" (submit)="onLoginBtn()">
+    <ion-input label="Usuario" type="text" formControlName="user"></ion-input>
+    <p style="color: red;text-align: right;" *ngIf="loginForm.get('user')?.getError('required')">
+      Campo obligatiorio
+    </p>
+    <p style="color: red;text-align: right;" *ngIf="loginForm.get('user')?.getError('maxlength')">
+      MAxinmo 10
+    </p>
+    <ion-input label="Contraseña" type="password" formControlName="pwd"></ion-input>
+    <p style="color: red;text-align: right;" *ngIf="loginForm.get('pwd')?.getError('required')">
+      Campo obligatiorio
+    </p>
+    <ion-button [routerLink]="['/home']">Ingresar</ion-button>
+    <ion-button (click)="onLoginBtn()" [disabled]="loginForm.invalid">Ingresar 2</ion-button>
+    <ion-button id="alertBtn">Ingresar 3</ion-button>
+    <ion-button type="submit" [disabled]="loginForm.invalid">Ingresar 4</ion-button>
+  </form> -->
 </ion-content>
