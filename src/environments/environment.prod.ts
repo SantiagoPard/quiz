@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  url_ms: "https://www.appinobyaca.edu.co/ms"
 };
