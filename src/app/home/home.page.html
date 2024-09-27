@@ -15,6 +15,7 @@
       <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
+
   <ion-searchbar></ion-searchbar>
 
 
@@ -42,7 +43,7 @@
 
       </ion-grid>
     </ion-item>
-    <ion-list *ngFor="let materia of mats">
+    <ion-list *ngFor="let materia of mats; index as i">
 
       <ion-item>
         <ion-grid>
@@ -50,19 +51,26 @@
 
             <ion-col size="4">
               {{materia.nombreMateria}}
-
+              
             </ion-col>
 
             <ion-col size="3">
+              
               {{materia.semestreMat}}
             </ion-col>
 
-            <ion-col size="3">
-              PASA </ion-col>
-            <ion-col size="2">
+            <ion-col *ngIf="materia.notaFinal < 3" id="colNoPaso" size="3">
+             NO PASO
+          </ion-col>
+
+          <ion-col *ngIf="materia.notaFinal > 3" id="colPaso" size="3">
+            PASO
+         </ion-col>
+          
+         <ion-col size="2">
 
               <ion-buttons>
-                <ion-button> <ion-icon name="arrow-forward-outline"></ion-icon></ion-button>
+                <ion-button [routerLink]="['/detalle-materia']"  router-direction="none" (click)="indexMat(i)" ><ion-icon name="arrow-forward-outline"></ion-icon></ion-button>
                 <ion-icon style="color:red" name="trash-outline"></ion-icon>
                 
               </ion-buttons>

@@ -1,6 +1,7 @@
 import { arrowForwardOutline, alertCircleOutline, trashOutline } from 'ionicons/icons';
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule,FormGroup, FormsModule, Validators, FormControl } from '@angular/forms';
 import { AppStorageService } from '../services/app-storage.service';
 import { addIcons } from 'ionicons';
@@ -24,7 +25,9 @@ import {
   IonButton,
   IonModal, 
   IonInput, 
-  IonTextarea } from '@ionic/angular/standalone';
+  IonTextarea,
+  
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
@@ -57,7 +60,8 @@ import {
     IonModal,
     FormsModule,
     ReactiveFormsModule,
-
+    RouterModule,
+    
   ]
 })
 export class HomePage implements OnInit {
@@ -65,14 +69,19 @@ export class HomePage implements OnInit {
   constructor( private storage: AppStorageService) { 
     addIcons({arrowForwardOutline,trashOutline,alertCircleOutline});
   }
+  
   mats:any = []
 
   ngOnInit() {
     this.datos()  
   }
+
   async datos(){
     this.mats = await this.storage.get('materia')
+  }
   
+  indexMat(i:number){
+    this.storage.set('matActual',i)
   }
 
   // toggleMenu(){}
@@ -98,7 +107,8 @@ export class HomePage implements OnInit {
   })
   
 
-  async crear(){
+
+  crear(){
     const nombreMateria = this.materiaForm.get('nombreMateria')?.value;
     const semestreMat = this.materiaForm.get('semestreMat')?.value;
     console.log(semestreMat)
@@ -113,10 +123,12 @@ export class HomePage implements OnInit {
         'semestreMat': semestreMat, 
         'codigoMateria': codigoMateria,
         'horarioMateria':horarioMateria,
-        'observacionesMateria':observacionesMateria}];
+        'observacionesMateria':observacionesMateria,
+        'notaFinal': 0}
+      ];
       
-      await this.storage.set('materia',materia)
-      await console.log(this.storage.get('materia'))
+       this.storage.set('materia',materia)
+       console.log(this.storage.get('materia'))
       
     }else {
       this.mats.push({
@@ -124,10 +136,11 @@ export class HomePage implements OnInit {
         'semestreMat': semestreMat, 
         'codigoMateria': codigoMateria,
         'horarioMateria':horarioMateria,
-        'observacionesMateria':observacionesMateria})
+        'observacionesMateria':observacionesMateria,
+        'notaFinal': 0})
 
-      await this.storage.set('materia',this.mats)
-      await console.log(this.storage.get('materia'))
+       this.storage.set('materia',this.mats)
+      console.log(this.storage.get('materia'))
 
     }
     
