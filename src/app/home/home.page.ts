@@ -128,6 +128,7 @@ export class HomePage implements OnInit {
       ];
       
        this.storage.set('materia',materia)
+       location.reload();
        console.log(this.storage.get('materia'))
       
     }else {

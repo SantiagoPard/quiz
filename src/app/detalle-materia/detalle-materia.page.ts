@@ -3,6 +3,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormsModule, Validators, FormControl } from '@angular/forms';
 import { AppStorageService } from '../services/app-storage.service';
+import { arrowForwardOutline, alertCircleOutline, trashOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 import {
   IonContent,
   IonHeader,
@@ -65,11 +67,25 @@ export class DetalleMateriaPage implements OnInit {
 
   id: number = 0;
   materia: any = [];
+  notasPve: any =[];
+  notasSve:any = [];
+  notasTve: any =[];
+  notasCu: any =[];
   notas: any = [];
+
+  promedioPve:any = 0;
+  promedioSve:number = 0;
+  promedioTve:number = 0;
+  promedioCu:number = 0;
+
+
   
   
   porcientoNota: number = 0;
-  constructor(private storage: AppStorageService, private activatedRoute: ActivatedRoute) { }
+  constructor(private storage: AppStorageService, private activatedRoute: ActivatedRoute) { 
+    addIcons({arrowForwardOutline,trashOutline,alertCircleOutline});
+    
+  }
 
 
   notaForm = new FormGroup({
@@ -80,16 +96,49 @@ export class DetalleMateriaPage implements OnInit {
 
   })
   async ngOnInit() {
-    await this.datos()
+    // Suscribirse a los cambios de parámetros de la ruta
+    this.activatedRoute.paramMap.subscribe(async (params) => {
+      const id = params.get('id');
+      if (id) {
+        this.id = +id;
+        await this.datos();
+        
+      }
+      this.promedio()
+    });
   }
 
   async datos() {
-    this.id = await this.storage.get("matActual")
-    this.materia = await this.storage.get('materia')
-    this.materia = await this.materia[this.id]
-    this.notas = await this.storage.get('detalleMateria')
-    console.log(await this.storage.get("matActual"))
+    const materias = await this.storage.get('materia');
+    this.materia = materias[this.id];
+    
+    this.notasPve = await this.storage.get('detalleMateriasPve') ;
+    this.notasSve = await this.storage.get('detalleMateriasSve') ;
+    this.notasTve = await this.storage.get('detalleMateriasTve') ;
+    this.notasCu = await this.storage.get('detalleMateriasCu') ;
+
+    console.log(await this.notasPve)
+
+    
   }
+  promedio(){
+    let notasPve = []
+    notasPve =  this.notasPve.filter((nota:any)=>nota.id === this.id)
+    if(notasPve.length == 1){
+      this.promedioPve = notasPve[0]
+    }else if(notasPve.length > 1){
+      notasPve.forEach((element:any) => {
+        this.promedioPve += element.notaPve
+      
+      });
+    }
+    this.promedioPve = this.promedioPve/notasPve.length
+    console.log(notasPve.length)
+  }
+
+
+
+
 
   crear() {
     const fechaEntrega = this.notaForm.get('fechaEntrega')?.value;
@@ -101,7 +150,7 @@ export class DetalleMateriaPage implements OnInit {
     switch (this.porcientoNota) {
       case 1: {
         console.log("hola")
-        if (this.notas == null) {
+        if (this.notasPve == null) {
           let detalleMateria =
             [{
               'id': this.id,
@@ -111,17 +160,21 @@ export class DetalleMateriaPage implements OnInit {
               'observacionesNota': observacionesNota
             }]
 
-          this.storage.set('dettalleMateria', detalleMateria)
+          this.storage.set('detalleMateriasPve', detalleMateria)
+          this.promedio()
           this.modal.dismiss(null, 'confirm');
+          location.reload()
         }else{
-          this.notas.push({
+          console.log('hola')
+          this.notasPve.push({
             'id': this.id,
             'fechaEntrega': fechaEntrega,
             'descripcionNota': descripcionNota,
             'notaPve': nota,
             'observacionesNota': observacionesNota
           })
-          this.storage.set('detalleMateria', this.notas)
+          this.storage.set('detalleMateriasPve', this.notasPve)
+          this.promedio()
           this.modal.dismiss(null, 'confirm');
 
         }
@@ -129,7 +182,7 @@ export class DetalleMateriaPage implements OnInit {
       }
       case 2: {
         console.log("hola")
-        if (this.notas == null) {
+        if (this.notasSve == null) {
           let detalleMateria =
             [{
               'id': this.id,
@@ -139,17 +192,18 @@ export class DetalleMateriaPage implements OnInit {
               'observacionesNota': observacionesNota
             }]
 
-          this.storage.set('dettalleMateria', detalleMateria)
+          this.storage.set('detalleMateriasSve', detalleMateria)
           this.modal.dismiss(null, 'confirm');
+          location.reload()
         }else{
-          this.notas.push({
+          this.notasSve.push({
             'id': this.id,
             'fechaEntrega': fechaEntrega,
             'descripcionNota': descripcionNota,
             'notaSve': nota,
             'observacionesNota': observacionesNota
           })
-          this.storage.set('detalleMateria', this.notas)
+          this.storage.set('detalleMateriasSve', this.notasSve)
           this.modal.dismiss(null, 'confirm');
 
         }
@@ -157,7 +211,7 @@ export class DetalleMateriaPage implements OnInit {
       }
       case 3: {
         console.log("hola")
-        if (this.notas == null) {
+        if (this.notasTve == null) {
           let detalleMateria =
             [{
               'id': this.id,
@@ -167,17 +221,18 @@ export class DetalleMateriaPage implements OnInit {
               'observacionesNota': observacionesNota
             }]
 
-          this.storage.set('dettalleMateria', detalleMateria)
+          this.storage.set('detalleMateriasTve', detalleMateria)
           this.modal.dismiss(null, 'confirm');
+          location.reload()
         }else{
-          this.notas.push({
+          this.notasTve.push({
             'id': this.id,
             'fechaEntrega': fechaEntrega,
             'descripcionNota': descripcionNota,
             'notaTve': nota,
             'observacionesNota': observacionesNota
           })
-          this.storage.set('detalleMateria', this.notas)
+          this.storage.set('detalleMateriasTve', this.notasTve)
           this.modal.dismiss(null, 'confirm');
 
         }
@@ -185,7 +240,7 @@ export class DetalleMateriaPage implements OnInit {
       }
       case 4: {
         console.log("hola")
-        if (this.notas == null) {
+        if (this.notasCu== null) {
           let detalleMateria =
             [{
               'id': this.id,
@@ -195,17 +250,18 @@ export class DetalleMateriaPage implements OnInit {
               'observacionesNota': observacionesNota
             }]
 
-          this.storage.set('dettalleMateria', detalleMateria)
+          this.storage.set('detalleMateriasCu', detalleMateria)
           this.modal.dismiss(null, 'confirm');
+          location.reload()
         }else{
-          this.notas.push({
+          this.notasCu.push({
             'id': this.id,
             'fechaEntrega': fechaEntrega,
             'descripcionNota': descripcionNota,
             'notaCu': nota,
             'observacionesNota': observacionesNota
           })
-          this.storage.set('detalleMateria', this.notas)
+          this.storage.set('detalleMateriasCu', this.notasCu)
           this.modal.dismiss(null, 'confirm');
         }
         break;
@@ -247,7 +303,7 @@ export class DetalleMateriaPage implements OnInit {
 
 
   async cancel() {
-    console.log(await this.storage.get('detalleMateria'))
+    console.log(this.notasPve)
     this.modal.dismiss(null, 'cancel');
 
   }
