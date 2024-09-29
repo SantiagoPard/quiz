@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule,FormGroup, FormsModule, Validators, FormControl } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
+import { MenuComponent } from '../componen/menu/menu.component';
 import { AppStorageService } from '../services/app-storage.service';
 import { addIcons } from 'ionicons';
 import { 
@@ -65,7 +66,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    
+    MenuComponent
   ]
 })
 export class HomePage implements OnInit {
@@ -134,10 +135,12 @@ export class HomePage implements OnInit {
   @ViewChild('crearMateria') modal!: IonModal;
   @ViewChild('editModal') editModal!: IonModal;
 
-  
-  cancel() {
+  abrirModalCrear(){
+    this.modal.present();
+  }
 
-    this.modal.dismiss(null, 'cancel');
+  cancel() {
+  this.modal.dismiss(null, 'cancel');
   console.log(this.mats)
   }
 

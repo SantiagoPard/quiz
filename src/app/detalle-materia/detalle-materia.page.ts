@@ -1,5 +1,6 @@
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormsModule, Validators, FormControl } from '@angular/forms';
 import { AppStorageService } from '../services/app-storage.service';
@@ -68,6 +69,7 @@ export class DetalleMateriaPage implements OnInit {
 
   id: number = 0;
   materia: any = [];
+  mats: any = [];
   notasPve: any = [];
   notasSve: any = [];
   notasTve: any = [];
@@ -92,7 +94,9 @@ export class DetalleMateriaPage implements OnInit {
   }
 
   @ViewChild(IonModal) modal!: IonModal;
+  @ViewChild('crearNota') crearNota!: IonModal;
   @ViewChild('editModalNota') editModalNota!: IonModal;
+  @ViewChild('crearMateriaModal') crearMateriaModal!: IonModal;
 
 
   notaForm = new FormGroup({
@@ -116,6 +120,7 @@ export class DetalleMateriaPage implements OnInit {
 
   async datos() {
     const materias = await this.storage.get('materia');
+    this.mats = materias;
     this.materia = materias[this.id];
 
     this.notasPve = await this.storage.get('detalleMateriasPve');
@@ -391,7 +396,7 @@ export class DetalleMateriaPage implements OnInit {
 
           this.storage.set('detalleMateriasPve', this.notasPve)
           this.promedio()
-          this.modal.dismiss(null, 'confirm');
+          this.crearNota.dismiss(null, 'confirm');
 
         } else {
           console.log('hola')
@@ -403,7 +408,7 @@ export class DetalleMateriaPage implements OnInit {
             'observacionesNota': observacionesNota
           })
           this.storage.set('detalleMateriasPve', this.notasPve)
-          this.modal.dismiss(null, 'confirm');
+          this.crearNota.dismiss(null, 'confirm');
           this.promedio()
 
 
@@ -424,7 +429,7 @@ export class DetalleMateriaPage implements OnInit {
 
           this.storage.set('detalleMateriasSve', this.notasSve)
           this.promedio()
-          this.modal.dismiss(null, 'confirm');
+          this.crearNota.dismiss(null, 'confirm');
 
         } else {
           this.notasSve.push({
@@ -435,7 +440,7 @@ export class DetalleMateriaPage implements OnInit {
             'observacionesNota': observacionesNota
           })
           this.storage.set('detalleMateriasSve', this.notasSve)
-          this.modal.dismiss(null, 'confirm');
+          this.crearNota.dismiss(null, 'confirm');
           this.promedio()
 
         }
@@ -454,7 +459,7 @@ export class DetalleMateriaPage implements OnInit {
             }]
 
           this.storage.set('detalleMateriasTve', this.notasTve)
-          this.modal.dismiss(null, 'confirm');
+          this.crearNota.dismiss(null, 'confirm');
 
         } else {
           this.notasTve.push({
@@ -466,7 +471,7 @@ export class DetalleMateriaPage implements OnInit {
           })
           this.storage.set('detalleMateriasTve', this.notasTve)
           this.promedio()
-          this.modal.dismiss(null, 'confirm');
+          this.crearNota.dismiss(null, 'confirm');
         }
         break;
       }
@@ -484,7 +489,7 @@ export class DetalleMateriaPage implements OnInit {
 
           this.storage.set('detalleMateriasCu', this.notasCu)
           this.promedio()
-          this.modal.dismiss(null, 'confirm');
+          this.crearNota.dismiss(null, 'confirm');
         } else {
           this.notasCu.push({
             'id': this.id,
@@ -494,7 +499,7 @@ export class DetalleMateriaPage implements OnInit {
             'observacionesNota': observacionesNota
           })
           this.storage.set('detalleMateriasCu', this.notasCu)
-          this.modal.dismiss(null, 'confirm');
+          this.crearNota.dismiss(null, 'confirm');
           this.promedio()
         }
         break;
@@ -507,25 +512,25 @@ export class DetalleMateriaPage implements OnInit {
       case 1: {
         console.log("caso 1")
         this.porcientoNota = tipoNota;
-        this.modal.present();
+        this.crearNota.present();
         break;
       }
       case 2: {
         console.log("caso 2")
         this.porcientoNota = tipoNota;
-        this.modal.present();
+        this.crearNota.present();
         break
       }
       case 3: {
         console.log("caso 3")
         this.porcientoNota = tipoNota;
-        this.modal.present();
+        this.crearNota.present();
         break
       }
       case 4: {
         console.log("caso 4")
         this.porcientoNota = tipoNota;
-        this.modal.present();
+        this.crearNota.present();
         break
       }
     }
@@ -536,7 +541,7 @@ export class DetalleMateriaPage implements OnInit {
 
   async cancel() {
     console.log(this.notasPve)
-    this.modal.dismiss(null, 'cancel');
+    this.crearNota.dismiss(null, 'cancel');
 
   }
 
@@ -545,9 +550,61 @@ export class DetalleMateriaPage implements OnInit {
     console.log(this.notasPve)
   }
   confirm() {
-    this.modal.dismiss(null, 'confirm');
+    this.crearNota.dismiss(null, 'confirm');
   }
 
 
 
+
+
+  materiaForm = new FormGroup({
+    nombreMateria: new FormControl('',[Validators.required]),
+    semestreMat: new FormControl(1,[Validators.required,Validators.min(1)]),
+    codigoMateria: new FormControl('',[Validators.required]),
+    horarioMateria: new FormControl('',[Validators.required]),
+    observacionesMateria: new FormControl('',[Validators.required])
+  })
+
+  crearMateria() {
+    const nombreMateria = this.materiaForm.get('nombreMateria')?.value;
+    const semestreMat = this.materiaForm.get('semestreMat')?.value;
+    const codigoMateria = this.materiaForm.get('codigoMateria')?.value;
+    const horarioMateria = this.materiaForm.get('horarioMateria')?.value;
+    const observacionesMateria = this.materiaForm.get('observacionesMateria')?.value;
+
+    if (this.mats == null) {
+      const materia = [{
+        'nombreMateria': nombreMateria, 
+        'semestreMat': semestreMat, 
+        'codigoMateria': codigoMateria,
+        'horarioMateria': horarioMateria,
+        'observacionesMateria': observacionesMateria,
+        'notaFinal': 0
+      }];
+      
+      this.storage.set('materia', materia);
+      this.crearMateriaModal.dismiss();
+      this.mats = materia; // Actualiza la lista local
+    } else {
+      this.mats.push({
+        'nombreMateria': nombreMateria, 
+        'semestreMat': semestreMat, 
+        'codigoMateria': codigoMateria,
+        'horarioMateria': horarioMateria,
+        'observacionesMateria': observacionesMateria,
+        'notaFinal': 0
+      });
+
+      this.storage.set('materia', this.mats);
+      this.crearMateriaModal.dismiss();
+    }
+    
+    // Resetea el formulario
+    
+  }
+
+  cancelCrearMateria() {
+    this.crearMateriaModal.dismiss();
+
+  }
 }

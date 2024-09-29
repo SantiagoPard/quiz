@@ -1,0 +1,19 @@
+<ion-menu side="start" menuId="main-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu Content</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-list>
+      <ion-item>
+        <ion-label [routerLink]="['/home']">INICIO</ion-label>
+      </ion-item>
+      <ion-item *ngFor="let materia of mats; let i = index" [routerLink]="['/detalle-materia', i]">
+        <ion-label>{{ materia.nombreMateria }}</ion-label>
+      </ion-item>
+    </ion-list>
+    <p *ngIf="mats.length === 0">No hay materias disponibles.</p>
+    <ion-button id="open-modal" color="medium" expand="block">Crear materia</ion-button>
+  </ion-content>
+</ion-menu>
