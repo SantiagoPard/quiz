@@ -1,3 +1,8 @@
+import { Materias } from './../models/materias';
+import { NotasPve } from './../models/notas-pve';
+import { NotasSve } from './../models/notas-sve';
+import { NotasTve } from './../models/notas-tve';
+import { NotasCu } from './../models/notas-cu';
 import { arrowForwardOutline, alertCircleOutline, trashOutline, createOutline } from 'ionicons/icons';
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -76,15 +81,15 @@ export class HomePage implements OnInit {
   }
 
   
-  mats:any = []
+  mats: Array<Materias> = [];
 
   index:any = []
-  results:any = [];
+  results:Array<Materias> = [];
 
-  notasPve: any =[];
-  notasSve:any = [];
-  notasTve: any =[];
-  notasCu: any =[];
+  notasPve: Array<NotasPve> =[];
+  notasSve: Array<NotasSve> = [];
+  notasTve: Array<NotasTve> =[];
+  notasCu: Array<NotasCu> =[];
 
   
 
@@ -181,11 +186,11 @@ export class HomePage implements OnInit {
     const horarioMateria = this.materiaForm.get('horarioMateria')?.value;
     const observacionesMateria = this.materiaForm.get('observacionesMateria')?.value;
 
-    this.mats[this.idMatMod].nombreMateria = nombreMateria
-    this.mats[this.idMatMod].semestreMat = semestreMat
-    this.mats[this.idMatMod].codigoMateria = codigoMateria
-    this.mats[this.idMatMod].horarioMateria = horarioMateria
-    this.mats[this.idMatMod].observacionesMateria = observacionesMateria
+    this.mats[this.idMatMod].nombreMateria = nombreMateria ?? ''
+    this.mats[this.idMatMod].semestreMat = semestreMat ?? 0
+    this.mats[this.idMatMod].codigoMateria = codigoMateria ?? ''
+    this.mats[this.idMatMod].horarioMateria = horarioMateria ?? ''
+    this.mats[this.idMatMod].observacionesMateria = observacionesMateria ?? ''
       
 
     this.storage.set('materia',this.mats)
@@ -216,11 +221,11 @@ export class HomePage implements OnInit {
       
     }else {
       this.mats.push({
-        'nombreMateria': nombreMateria, 
-        'semestreMat': semestreMat, 
-        'codigoMateria': codigoMateria,
-        'horarioMateria':horarioMateria,
-        'observacionesMateria':observacionesMateria,
+        'nombreMateria': nombreMateria ?? '', 
+        'semestreMat': semestreMat ?? 0, 
+        'codigoMateria': codigoMateria ?? '',
+        'horarioMateria':horarioMateria ?? '',
+        'observacionesMateria':observacionesMateria ?? '',
         'notaFinal': 0})
 
        this.storage.set('materia',this.mats)

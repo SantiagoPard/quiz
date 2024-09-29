@@ -40,9 +40,9 @@ export class MenuComponent implements OnInit, OnDestroy {
   async datos() {
     try {
       const materias = await this.storage.get('materia');
-      console.log('Materias obtenidas del almacenamiento:', materias);
+ 
       this.mats = materias || [];
-      console.log('this.mats después de la asignación:', this.mats);
+   
     } catch (error) {
       console.error('Error al obtener materias:', error);
     }

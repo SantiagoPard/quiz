@@ -1,6 +1,11 @@
+
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
-
+import { Materias } from '../models/materias';
+import { NotasPve } from '../models/notas-pve';
+import { NotasSve } from '../models/notas-sve';
+import { NotasTve } from '../models/notas-tve';
+import { NotasCu } from '../models/notas-cu';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormsModule, Validators, FormControl } from '@angular/forms';
 import { AppStorageService } from '../services/app-storage.service';
@@ -68,12 +73,16 @@ import {
 export class DetalleMateriaPage implements OnInit {
 
   id: number = 0;
-  materia: any = [];
-  mats: any = [];
-  notasPve: any = [];
-  notasSve: any = [];
-  notasTve: any = [];
-  notasCu: any = [];
+
+  materia: Materias ={} as Materias;
+  
+  mats: Array<Materias> = [];
+
+  notasPve: Array<NotasPve> = [];
+  
+  notasSve: Array<NotasSve> = [];
+  notasTve: Array<NotasTve> = [];
+  notasCu: Array<NotasCu> = [];
   idNotaMod: number = 0;
 
   promedioPve: number = 0;
@@ -115,6 +124,7 @@ export class DetalleMateriaPage implements OnInit {
         await this.datos();
       }
       this.promedio()
+   
     });
   }
 
@@ -122,6 +132,7 @@ export class DetalleMateriaPage implements OnInit {
     const materias = await this.storage.get('materia');
     this.mats = materias;
     this.materia = materias[this.id];
+    console.log(this.materia)
 
     this.notasPve = await this.storage.get('detalleMateriasPve');
     this.notasSve = await this.storage.get('detalleMateriasSve');
@@ -198,9 +209,9 @@ export class DetalleMateriaPage implements OnInit {
 
         const notaMod = this.notasPve[i]
         this.notaForm.patchValue({
-          fechaEntrega: notaMod.fechaEntrega,
+          fechaEntrega: notaMod.fechaEntrega ,
           descripcionNota: notaMod.descripcionNota,
-          nota: notaMod.notaPve,
+          nota: notaMod.notaPve.toString(),
           observacionesNota: notaMod.observacionesNota
         })
         this.editModalNota.present()
@@ -211,7 +222,7 @@ export class DetalleMateriaPage implements OnInit {
         this.notaForm.patchValue({
           fechaEntrega: notaMod.fechaEntrega,
           descripcionNota: notaMod.descripcionNota,
-          nota: notaMod.notaSve,
+          nota: notaMod.notaSve.toString(),
           observacionesNota: notaMod.observacionesNota
         })
         this.editModalNota.present()
@@ -222,7 +233,7 @@ export class DetalleMateriaPage implements OnInit {
         this.notaForm.patchValue({
           fechaEntrega: notaMod.fechaEntrega,
           descripcionNota: notaMod.descripcionNota,
-          nota: notaMod.notaTve,
+          nota: notaMod.notaTve.toString(),
           observacionesNota: notaMod.observacionesNota
         })
         this.editModalNota.present()
@@ -233,7 +244,7 @@ export class DetalleMateriaPage implements OnInit {
         this.notaForm.patchValue({
           fechaEntrega: notaMod.fechaEntrega,
           descripcionNota: notaMod.descripcionNota,
-          nota: notaMod.notaCu,
+          nota: notaMod.notaCu.toString(),
           observacionesNota: notaMod.observacionesNota
         })
         this.editModalNota.present()
@@ -250,10 +261,10 @@ export class DetalleMateriaPage implements OnInit {
 
     switch (this.porcientoNota) {
       case 1: {
-        this.notasPve[this.idNotaMod].fechaEntrega = fechaEntrega
-        this.notasPve[this.idNotaMod].descripcionNota = descripcionNota
-        this.notasPve[this.idNotaMod].notaPve = nota
-        this.notasPve[this.idNotaMod].observacionesNota = observacionesNota
+        this.notasPve[this.idNotaMod].fechaEntrega = fechaEntrega ?? ''
+        this.notasPve[this.idNotaMod].descripcionNota = descripcionNota ?? ''
+        this.notasPve[this.idNotaMod].notaPve = Number(nota) || 0
+        this.notasPve[this.idNotaMod].observacionesNota = observacionesNota ?? ''
 
         this.storage.set('detalleMateriasPve', this.notasPve)
         this.promedio()
@@ -261,10 +272,10 @@ export class DetalleMateriaPage implements OnInit {
         break;
       }
       case 2: {
-        this.notasSve[this.idNotaMod].fechaEntrega = fechaEntrega
-        this.notasSve[this.idNotaMod].descripcionNota = descripcionNota
-        this.notasSve[this.idNotaMod].notaSve = nota
-        this.notasSve[this.idNotaMod].observacionesNota = observacionesNota
+        this.notasSve[this.idNotaMod].fechaEntrega = fechaEntrega ?? ''
+        this.notasSve[this.idNotaMod].descripcionNota = descripcionNota ?? ''
+        this.notasSve[this.idNotaMod].notaSve = Number(nota) || 0
+        this.notasSve[this.idNotaMod].observacionesNota = observacionesNota ?? ''
 
         this.storage.set('detalleMateriasSve', this.notasSve)
         this.promedio()
@@ -272,10 +283,10 @@ export class DetalleMateriaPage implements OnInit {
         break;
       }
       case 3: {
-        this.notasTve[this.idNotaMod].fechaEntrega = fechaEntrega
-        this.notasTve[this.idNotaMod].descripcionNota = descripcionNota
-        this.notasTve[this.idNotaMod].notaTve = nota
-        this.notasTve[this.idNotaMod].observacionesNota = observacionesNota
+        this.notasTve[this.idNotaMod].fechaEntrega = fechaEntrega ?? '' 
+        this.notasTve[this.idNotaMod].descripcionNota = descripcionNota ?? ''
+        this.notasTve[this.idNotaMod].notaTve = Number(nota) || 0
+        this.notasTve[this.idNotaMod].observacionesNota = observacionesNota ?? ''
 
         this.storage.set('detalleMateriasTve', this.notasTve)
         this.promedio()
@@ -283,10 +294,10 @@ export class DetalleMateriaPage implements OnInit {
         break;
       }
       case 4: {
-        this.notasCu[this.idNotaMod].fechaEntrega = fechaEntrega
-        this.notasCu[this.idNotaMod].descripcionNota = descripcionNota
-        this.notasCu[this.idNotaMod].notaCu = nota
-        this.notasCu[this.idNotaMod].observacionesNota = observacionesNota
+        this.notasCu[this.idNotaMod].fechaEntrega = fechaEntrega ?? ''
+        this.notasCu[this.idNotaMod].descripcionNota = descripcionNota ?? ''
+        this.notasCu[this.idNotaMod].notaCu = Number(nota) || 0
+        this.notasCu[this.idNotaMod].observacionesNota = observacionesNota ?? ''
 
         this.storage.set('detalleMateriasCu', this.notasCu)
         this.promedio()
@@ -370,7 +381,7 @@ export class DetalleMateriaPage implements OnInit {
     let notaFinalAct = await this.storage.get('materia')
     notaFinalAct[this.id].notaFinal = this.promedioTotal
     this.storage.set('materia', notaFinalAct)
-    console.log(await this.storage.get('materia'))
+ 
   }
 
   crear() {
@@ -387,10 +398,10 @@ export class DetalleMateriaPage implements OnInit {
           this.notasPve =
             [{
               'id': this.id,
-              'fechaEntrega': fechaEntrega,
-              'descripcionNota': descripcionNota,
-              'notaPve': nota,
-              'observacionesNota': observacionesNota
+              'fechaEntrega': fechaEntrega ?? '',
+              'descripcionNota': descripcionNota ?? '',
+              'notaPve': Number(nota) || 0,
+              'observacionesNota': observacionesNota ?? ''
             }]
 
 
@@ -402,10 +413,10 @@ export class DetalleMateriaPage implements OnInit {
           console.log('hola')
           this.notasPve.push({
             'id': this.id,
-            'fechaEntrega': fechaEntrega,
-            'descripcionNota': descripcionNota,
-            'notaPve': nota,
-            'observacionesNota': observacionesNota
+            'fechaEntrega': fechaEntrega ?? '',
+            'descripcionNota': descripcionNota ?? '',
+            'notaPve': Number(nota) || 0,
+            'observacionesNota': observacionesNota ?? ''
           })
           this.storage.set('detalleMateriasPve', this.notasPve)
           this.crearNota.dismiss(null, 'confirm');
@@ -421,10 +432,10 @@ export class DetalleMateriaPage implements OnInit {
           this.notasSve =
             [{
               'id': this.id,
-              'fechaEntrega': fechaEntrega,
-              'descripcionNota': descripcionNota,
-              'notaSve': nota,
-              'observacionesNota': observacionesNota
+              'fechaEntrega': fechaEntrega ?? '',
+              'descripcionNota': descripcionNota ?? '',
+              'notaSve': Number(nota) || 0,
+              'observacionesNota': observacionesNota ?? ''
             }]
 
           this.storage.set('detalleMateriasSve', this.notasSve)
@@ -434,10 +445,10 @@ export class DetalleMateriaPage implements OnInit {
         } else {
           this.notasSve.push({
             'id': this.id,
-            'fechaEntrega': fechaEntrega,
-            'descripcionNota': descripcionNota,
-            'notaSve': nota,
-            'observacionesNota': observacionesNota
+            'fechaEntrega': fechaEntrega ?? '',
+            'descripcionNota': descripcionNota ?? ''  ,
+            'notaSve': Number(nota) || 0,
+            'observacionesNota': observacionesNota ?? ''
           })
           this.storage.set('detalleMateriasSve', this.notasSve)
           this.crearNota.dismiss(null, 'confirm');
@@ -452,10 +463,10 @@ export class DetalleMateriaPage implements OnInit {
           this.notasTve =
             [{
               'id': this.id,
-              'fechaEntrega': fechaEntrega,
-              'descripcionNota': descripcionNota,
-              'notaTve': nota,
-              'observacionesNota': observacionesNota
+              'fechaEntrega': fechaEntrega ?? '',
+              'descripcionNota': descripcionNota ?? '',
+              'notaTve': Number(nota) || 0,
+              'observacionesNota': observacionesNota ?? ''
             }]
 
           this.storage.set('detalleMateriasTve', this.notasTve)
@@ -464,10 +475,10 @@ export class DetalleMateriaPage implements OnInit {
         } else {
           this.notasTve.push({
             'id': this.id,
-            'fechaEntrega': fechaEntrega,
-            'descripcionNota': descripcionNota,
-            'notaTve': nota,
-            'observacionesNota': observacionesNota
+            'fechaEntrega': fechaEntrega ?? '',
+            'descripcionNota': descripcionNota ?? '',
+            'notaTve': Number(nota) || 0,
+            'observacionesNota': observacionesNota ?? ''
           })
           this.storage.set('detalleMateriasTve', this.notasTve)
           this.promedio()
@@ -481,10 +492,10 @@ export class DetalleMateriaPage implements OnInit {
           this.notasCu =
             [{
               'id': this.id,
-              'fechaEntrega': fechaEntrega,
-              'descripcionNota': descripcionNota,
-              'notaCu': nota,
-              'observacionesNota': observacionesNota
+              'fechaEntrega': fechaEntrega ?? '',
+              'descripcionNota': descripcionNota ?? '',
+              'notaCu': Number(nota) || 0,
+              'observacionesNota': observacionesNota ?? ''
             }]
 
           this.storage.set('detalleMateriasCu', this.notasCu)
@@ -493,10 +504,10 @@ export class DetalleMateriaPage implements OnInit {
         } else {
           this.notasCu.push({
             'id': this.id,
-            'fechaEntrega': fechaEntrega,
-            'descripcionNota': descripcionNota,
-            'notaCu': nota,
-            'observacionesNota': observacionesNota
+            'fechaEntrega': fechaEntrega ?? '',
+            'descripcionNota': descripcionNota ?? '',
+            'notaCu': Number(nota) || 0,
+            'observacionesNota': observacionesNota ?? ''
           })
           this.storage.set('detalleMateriasCu', this.notasCu)
           this.crearNota.dismiss(null, 'confirm');
@@ -572,32 +583,19 @@ export class DetalleMateriaPage implements OnInit {
     const horarioMateria = this.materiaForm.get('horarioMateria')?.value;
     const observacionesMateria = this.materiaForm.get('observacionesMateria')?.value;
 
-    if (this.mats == null) {
-      const materia = [{
-        'nombreMateria': nombreMateria, 
-        'semestreMat': semestreMat, 
-        'codigoMateria': codigoMateria,
-        'horarioMateria': horarioMateria,
-        'observacionesMateria': observacionesMateria,
-        'notaFinal': 0
-      }];
-      
-      this.storage.set('materia', materia);
-      this.crearMateriaModal.dismiss();
-      this.mats = materia; // Actualiza la lista local
-    } else {
+    
       this.mats.push({
-        'nombreMateria': nombreMateria, 
-        'semestreMat': semestreMat, 
-        'codigoMateria': codigoMateria,
-        'horarioMateria': horarioMateria,
-        'observacionesMateria': observacionesMateria,
+        'nombreMateria': nombreMateria ?? '', 
+        'semestreMat': semestreMat ?? 0, 
+        'codigoMateria': codigoMateria ?? '',
+        'horarioMateria': horarioMateria ?? '',
+        'observacionesMateria': observacionesMateria ?? '',
         'notaFinal': 0
       });
 
       this.storage.set('materia', this.mats);
       this.crearMateriaModal.dismiss();
-    }
+    
     
     // Resetea el formulario
     
