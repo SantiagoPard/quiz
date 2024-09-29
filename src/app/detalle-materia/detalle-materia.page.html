@@ -71,6 +71,41 @@
                     </ion-row>
                 </ion-grid>
             </ion-item>
+
+            <ion-item>
+                <ion-grid>
+                    <ion-row>
+
+                        <ion-col size="5">
+
+                            Observaciones:
+                        </ion-col>
+
+                        <ion-col size="5">
+                            {{materia.observacionesMateria}}
+
+                        </ion-col>
+
+                    </ion-row>
+                </ion-grid>
+            </ion-item>
+            <ion-item>
+                <ion-grid>
+                    <ion-row>
+
+                        <ion-col size="5">
+
+                            Horario:
+                        </ion-col>
+
+                        <ion-col size="5">
+                            {{materia.horarioMateria}}
+
+                        </ion-col>
+
+                    </ion-row>
+                </ion-grid>
+            </ion-item>
         </ion-list>
 
         <ion-accordion-group [multiple]="true" expand="inset">
@@ -78,10 +113,29 @@
                 <ion-item slot="header" color="light">
                     <ion-label>Notas primer 20%</ion-label>
                 </ion-item>
+                <ion-item slot="content">
+                    <ion-grid>
+                        <ion-row>
 
-                <ion-list  slot="content" *ngFor="let nPve of notasPve">
+                            <ion-col style="text-align: center;" size="4">
+                                Fecha Entrega
 
-                    <ion-item *ngIf="nPve.id == id" >
+                            </ion-col>
+
+                            <ion-col style="text-align: center;" size="4">
+                                Nota
+                            </ion-col>
+
+                            <ion-col style="text-align: center;" size="4">
+                                acciones
+                            </ion-col>
+
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+                <ion-list slot="content" *ngFor="let nPve of notasPve;index as i">
+
+                    <ion-item *ngIf="nPve.id == id">
                         <ion-grid>
                             <ion-row>
 
@@ -90,26 +144,35 @@
 
                                 </ion-col>
 
-                                <ion-col size="2">
-                                    {{nPve.notaPve}}
+                                <ion-col  style="text-align: center;" size="4">
+                                 {{nPve.notaPve.toFixed(2)}}
                                 </ion-col>
+                      
 
-                                <ion-col size="3">
-                                    {{nPve.descripcionNota}}
-                                </ion-col>
-
-
-
-                                <ion-col size="3">
+                                <ion-col size="4">
 
                                     <ion-buttons style="display: flex; flex-direction: row;">
-                                
-                                        <ion-button><ion-icon name="create-outline"></ion-icon></ion-button>
-                                        <ion-button><ion-icon style="width: 60px; height: 60px;" style="color:red"
+
+                                        <ion-button (click)="editNote(i,1)"><ion-icon style="width: 30px; height: 30px;"
+                                                name="create-outline" id="open-edit-modal" ></ion-icon></ion-button>
+                                        <ion-button (click)="eliminar(i,1)"><ion-icon style="color:red; width: 30px; height: 30px;"
                                                 name="trash-outline"></ion-icon></ion-button>
 
                                     </ion-buttons>
 
+                                </ion-col>
+
+                            </ion-row>
+                            <ion-row class="description-row">
+                                <ion-row>
+                                    <ion-col size="12">
+                                        descripcion:
+                                    </ion-col>
+                                </ion-row>
+                                <ion-col size="12">
+                                    <div class="description-container">
+                                        <p class="full-description">{{nPve.descripcionNota}}</p>
+                                    </div>
                                 </ion-col>
 
                             </ion-row>
@@ -118,9 +181,10 @@
 
                 </ion-list>
 
-               
-                <ion-buttons slot="content" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-                    <div>Nota : {{promedioPve}}</div>
+
+                <ion-buttons slot="content"
+                    style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div>Nota : {{promedioPve.toFixed(2)}}</div>
                     <ion-button (click)="addNote(1)" fill="solid" color="medium">añadir nota</ion-button>
                 </ion-buttons>
 
@@ -129,38 +193,67 @@
                 <ion-item slot="header" color="light">
                     <ion-label>Nota Segundo 20%</ion-label>
                 </ion-item>
+                <ion-item slot="content">
+                    <ion-grid>
+                        <ion-row>
 
-                <ion-list slot="content" *ngFor="let nSve of notasSve">
+                            <ion-col style="text-align: center;" size="4">
+                                Fecha Entrega
 
-                    <ion-item *ngIf="nSve.id == id" >
+                            </ion-col>
+
+                            <ion-col style="text-align: center;" size="4">
+                                Nota
+                            </ion-col>
+
+                            <ion-col style="text-align: center;" size="4">
+                                acciones
+                            </ion-col>
+
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+
+                <ion-list slot="content" *ngFor="let nSve of notasSve;index as i">
+
+                    <ion-item *ngIf="nSve.id == id">
                         <ion-grid>
                             <ion-row>
 
-                                <ion-col size="3">
-                                    {{nSve.notaSve}}
+                                <ion-col size="4">
+                                    {{nSve.fechaEntrega}}
 
                                 </ion-col>
 
-                                <ion-col size="3">
-
+                                <ion-col  style="text-align: center;" size="4">
+                                    {{nSve.notaSve.toFixed(2)}}
                                 </ion-col>
-
-                                <ion-col size="3">
-                                    NOTA
-                                </ion-col>
-
-
-
-                                <ion-col size="3">
+                              
+                                <ion-col size="4">
 
                                     <ion-buttons style="display: flex; flex-direction: row;">
-                                        <ion-button router-direction="none"><ion-icon style="width: 30px; height: 30px;"
-                                                name="arrow-forward-outline"></ion-icon></ion-button>
-                                        <ion-button><ion-icon style="width: 60px; height: 60px;" style="color:red"
-                                                name="trash-outline"></ion-icon></ion-button>
+
+                                        <ion-button (click)="editNote(i,2)"><ion-icon style="width: 30px; height: 30px;"
+                                            name="create-outline" id="open-edit-modal" ></ion-icon></ion-button>
+                                    <ion-button (click)="eliminar(i,2)"><ion-icon style="color:red; width: 30px; height: 30px;"
+                                            name="trash-outline"></ion-icon></ion-button>
+
 
                                     </ion-buttons>
 
+                                </ion-col>
+
+                            </ion-row>
+                            <ion-row class="description-row">
+                                <ion-row>
+                                    <ion-col size="12">
+                                        descripcion:
+                                    </ion-col>
+                                </ion-row>
+                                <ion-col size="12">
+                                    <div class="description-container">
+                                        <p class="full-description">{{nSve.descripcionNota}}</p>
+                                    </div>
                                 </ion-col>
 
                             </ion-row>
@@ -169,8 +262,9 @@
 
                 </ion-list>
 
-         
-                <ion-buttons slot="content" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+
+                <ion-buttons slot="content"
+                    style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                     <div>Nota : {{promedioSve}}</div>
                     <ion-button (click)="addNote(2)" fill="solid" color="medium">añadir nota</ion-button>
                 </ion-buttons>
@@ -181,38 +275,66 @@
                 <ion-item slot="header" color="light">
                     <ion-label>Notas Tercer 20%</ion-label>
                 </ion-item>
+                <ion-item slot="content">
+                    <ion-grid>
+                        <ion-row>
 
-                <ion-list slot="content" *ngFor="let nTve of notasTve">
+                            <ion-col style="text-align: center;" size="4">
+                                Fecha Entrega
 
-                    <ion-item *ngIf="nTve.id == id" >
+                            </ion-col>
+
+                            <ion-col style="text-align: center;" size="4">
+                                Nota
+                            </ion-col>
+
+                            <ion-col style="text-align: center;" size="4">
+                                acciones
+                            </ion-col>
+
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+                <ion-list slot="content" *ngFor="let nTve of notasTve;index as i">
+
+                    <ion-item *ngIf="nTve.id == id">
                         <ion-grid>
                             <ion-row>
 
-                                <ion-col  size="3">
-                                    {{nTve.notaTve}}
+                                <ion-col size="4">
+                                    {{nTve.fechaEntrega}}
 
                                 </ion-col>
 
-                                <ion-col size="3">
-
+                                <ion-col style="text-align: center;" size="4">
+                                    {{nTve.notaTve.toFixed(2)}}
                                 </ion-col>
-
-                                <ion-col size="3">
-                                    NOTA
-                                </ion-col>
-
-
-
-                                <ion-col size="3">
+                             
+                                <ion-col size="4">
 
                                     <ion-buttons style="display: flex; flex-direction: row;">
-                                        <ion-button router-direction="none"><ion-icon style="width: 30px; height: 30px;"
-                                                name="arrow-forward-outline"></ion-icon></ion-button>
-                                        <ion-button><ion-icon style="width: 60px; height: 60px;" style="color:red"
-                                                name="trash-outline"></ion-icon></ion-button>
+
+                                        <ion-button (click)="editNote(i,3)"><ion-icon style="width: 30px; height: 30px;"
+                                            name="create-outline" id="open-edit-modal" ></ion-icon></ion-button>
+                                    <ion-button (click)="eliminar(i,3)"><ion-icon style="color:red; width: 30px; height: 30px;"
+                                            name="trash-outline"></ion-icon></ion-button>
+
 
                                     </ion-buttons>
 
+                                </ion-col>
+
+                            </ion-row>
+                            <ion-row class="description-row">
+                                <ion-row>
+                                    <ion-col size="12">
+                                        descripcion:
+                                    </ion-col>
+                                </ion-row>
+                                <ion-col size="12">
+                                    <div class="description-container">
+                                        <p class="full-description">{{nTve.descripcionNota}}</p>
+                                    </div>
                                 </ion-col>
 
                             </ion-row>
@@ -221,7 +343,8 @@
 
                 </ion-list>
 
-                <ion-buttons slot="content"  style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                <ion-buttons slot="content"
+                    style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                     <div>Nota : {{promedioTve}}</div>
                     <ion-button (click)="addNote(3)" fill="solid" color="medium">añadir nota</ion-button>
                 </ion-buttons>
@@ -232,38 +355,65 @@
                 <ion-item slot="header" color="light">
                     <ion-label>Nota 40%</ion-label>
                 </ion-item>
+                <ion-item slot="content">
+                    <ion-grid>
+                        <ion-row>
 
-                <ion-list slot="content" *ngFor="let nCu of notasCu">
+                            <ion-col style="text-align: center;" size="4">
+                                Fecha Entrega
 
-                    <ion-item *ngIf="nCu.id == id" >
+                            </ion-col>
+
+                            <ion-col style="text-align: center;" size="4">
+                                Nota
+                            </ion-col>
+
+                            <ion-col style="text-align: center;" size="4">
+                                acciones
+                            </ion-col>
+
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+                <ion-list slot="content" *ngFor="let nCu of notasCu;index as i">
+
+                    <ion-item *ngIf="nCu.id == id">
                         <ion-grid>
                             <ion-row>
 
-                                <ion-col size="3">
-                                    {{nCu.notaCu}}
+                                <ion-col size="4">
+                                    {{nCu.fechaEntrega}}
 
                                 </ion-col>
-
-                                <ion-col size="3">
-
+                                <ion-col style="text-align: center;" size="4">
+                                    {{nCu.notaCu.toFixed(2)}}
                                 </ion-col>
+                         
 
-                                <ion-col size="3">
-                                    NOTA
-                                </ion-col>
-
-
-
-                                <ion-col size="3">
+                                <ion-col size="4">
 
                                     <ion-buttons style="display: flex; flex-direction: row;">
-                                        <ion-button router-direction="none"><ion-icon style="width: 30px; height: 30px;"
-                                                name="arrow-forward-outline"></ion-icon></ion-button>
-                                        <ion-button><ion-icon style="width: 60px; height: 60px;" style="color:red"
-                                                name="trash-outline"></ion-icon></ion-button>
+                                        <ion-button (click)="editNote(i,4)"><ion-icon style="width: 30px; height: 30px;"
+                                            name="create-outline" id="open-edit-modal" ></ion-icon></ion-button>
+                                    <ion-button (click)="eliminar(i,4)"><ion-icon style="color:red; width: 30px; height: 30px;"
+                                            name="trash-outline"></ion-icon></ion-button>
+
 
                                     </ion-buttons>
 
+                                </ion-col>
+
+                            </ion-row>
+                            <ion-row class="description-row">
+                                <ion-row>
+                                    <ion-col size="12">
+                                        descripcion:
+                                    </ion-col>
+                                </ion-row>
+                                <ion-col size="12">
+                                    <div class="description-container">
+                                        <p class="full-description">{{nCu.descripcionNota}}</p>
+                                    </div>
                                 </ion-col>
 
                             </ion-row>
@@ -273,7 +423,8 @@
                 </ion-list>
 
 
-                <ion-buttons slot="content"  style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                <ion-buttons slot="content"
+                    style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                     <div>Nota : {{promedioCu}}</div>
                     <ion-button (click)="addNote(4)" fill="solid" color="medium">añadir nota</ion-button>
                 </ion-buttons>
@@ -291,7 +442,7 @@
                         <ion-buttons slot="start">
                             <ion-button (click)="cancel()">Cancel</ion-button>
                         </ion-buttons>
-                        <ion-title>Welcome</ion-title>
+                        <ion-title>Crear Materia</ion-title>
 
                     </ion-toolbar>
                 </ion-header>
@@ -301,21 +452,33 @@
                             <ion-item>
                                 <ion-input color="red" label="Fecha Entrega" placeholder="Fecha Entrega" type="date"
                                     formControlName="fechaEntrega"></ion-input>
-                                <!-- <ion-icon style="color: red;text-align: right;"></ion-icon> -->
-
+                                <ion-icon style="color: red;text-align: right;"
+                                    *ngIf="notaForm.get('fechaEntrega')?.getError('required')"
+                                    name="alert-circle-outline"></ion-icon>
                             </ion-item>
                             <ion-item>
                                 <ion-textarea labelPlacement="stacked" color="red" label="descripcion"
                                     placeholder="descripcion" type="text"
                                     formControlName="descripcionNota"></ion-textarea>
-                                <!-- <ion-icon style="color: red;text-align: right;"></ion-icon> -->
+                                <ion-icon style="color: red;text-align: right;"
+                                    *ngIf="notaForm.get('descripcionNota')?.getError('required')"
+                                    name="alert-circle-outline"></ion-icon>
 
                             </ion-item>
                             <ion-item>
                                 <ion-input color="red" label="nota" placeholder="nota" type="number"
                                     formControlName="nota"></ion-input>
-                                <!-- <ion-icon style="color: red;text-align: right;"></ion-icon> -->
-
+                                <ion-icon style="color: red;text-align: right;"
+                                    *ngIf="notaForm.get('nota')?.getError('min')"
+                                    name="alert-circle-outline"></ion-icon>
+                            </ion-item>
+                            <ion-item style="color: red;text-align: right;"
+                                *ngIf="notaForm.get('nota')?.getError('min')">
+                                <p>la nota debe ser mayor a 0</p>
+                            </ion-item>
+                            <ion-item style="color: red;text-align: right;"
+                                *ngIf="notaForm.get('nota')?.getError('max')">
+                                <p>la nota debe ser menor a 5</p>
                             </ion-item>
                             <ion-item>
                                 <ion-textarea labelPlacement="stacked" color="red" label="observaciones"
@@ -326,7 +489,7 @@
                             </ion-item>
                             <ion-item style="justify-content: end;">
                                 <ion-buttons slot="end">
-                                    <ion-button type="submit">Crear nota</ion-button>
+                                    <ion-button type="submit" [disabled]="notaForm.invalid">Crear nota</ion-button>
                                 </ion-buttons>
                             </ion-item>
                         </ion-list>
@@ -335,5 +498,70 @@
 
             </ng-template>
         </ion-modal>
-    </ion-content>
+
+    <!-- modal-editar -->
+    <ion-modal #editModalNota trigger="open-edit-modal">
+        <ng-template>
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-button (click)="cancelEditar()">Cancel</ion-button>
+                    </ion-buttons>
+                    <ion-title>Modificar Materia</ion-title>
+
+                </ion-toolbar>
+            </ion-header>
+            <ion-content class="ion-padding">
+                <form (ngSubmit)="editar()" [formGroup]="notaForm">
+                    <ion-list [inset]="true">
+                        <ion-item>
+                            <ion-input color="red" label="Fecha Entrega" placeholder="Fecha Entrega" type="date"
+                                formControlName="fechaEntrega"></ion-input>
+                            <ion-icon style="color: red;text-align: right;"
+                                *ngIf="notaForm.get('fechaEntrega')?.getError('required')"
+                                name="alert-circle-outline"></ion-icon>
+                        </ion-item>
+                        <ion-item>
+                            <ion-textarea labelPlacement="stacked" color="red" label="descripcion"
+                                placeholder="descripcion" type="text"
+                                formControlName="descripcionNota"></ion-textarea>
+                            <ion-icon style="color: red;text-align: right;"
+                                *ngIf="notaForm.get('descripcionNota')?.getError('required')"
+                                name="alert-circle-outline"></ion-icon>
+
+                        </ion-item>
+                        <ion-item>
+                            <ion-input color="red" label="nota" placeholder="nota" type="number"
+                                formControlName="nota"></ion-input>
+                            <ion-icon style="color: red;text-align: right;"
+                                *ngIf="notaForm.get('nota')?.getError('min')"
+                                name="alert-circle-outline"></ion-icon>
+                        </ion-item>
+                        <ion-item style="color: red;text-align: right;"
+                            *ngIf="notaForm.get('nota')?.getError('min')">
+                            <p>la nota debe ser mayor a 0</p>
+                        </ion-item>
+                        <ion-item style="color: red;text-align: right;"
+                            *ngIf="notaForm.get('nota')?.getError('max')">
+                            <p>la nota debe ser menor a 5</p>
+                        </ion-item>
+                        <ion-item>
+                            <ion-textarea labelPlacement="stacked" color="red" label="observaciones"
+                                placeholder="observaciones" type="text"
+                                formControlName="observacionesNota"></ion-textarea>
+                            <!-- <ion-icon style="color: red;text-align: right;"></ion-icon> -->
+
+                        </ion-item>
+                        <ion-item style="justify-content: end;">
+                            <ion-buttons slot="end">
+                                <ion-button type="submit" [disabled]="notaForm.invalid">Modificar nota</ion-button>
+                            </ion-buttons>
+                        </ion-item>
+                    </ion-list>
+                </form>
+            </ion-content>
+
+        </ng-template>
+    </ion-modal>    
+</ion-content>
 </div>

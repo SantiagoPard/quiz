@@ -123,6 +123,7 @@
                   formControlName="semestreMat"></ion-input>
                   <ion-icon style="color: red;text-align: right;"
                   *ngIf="materiaForm.get('semestreMat')?.getError('required')" name="alert-circle-outline"></ion-icon>
+                  
                   <ion-icon  style="color: red;text-align: right;"
                   *ngIf="materiaForm.get('semestreMat')?.getError('min')" name="alert-circle-outline"></ion-icon>
                 </ion-item>

@@ -1,0 +1,19 @@
+.description-row {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .description-container {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  
+  .full-description {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin: 0;
+    padding: 10px;
+    border-radius: 5px;
+  }
