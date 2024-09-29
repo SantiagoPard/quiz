@@ -470,6 +470,7 @@ export class DetalleMateriaPage implements OnInit {
             }]
 
           this.storage.set('detalleMateriasTve', this.notasTve)
+          this.promedio()
           this.crearNota.dismiss(null, 'confirm');
 
         } else {
@@ -500,6 +501,7 @@ export class DetalleMateriaPage implements OnInit {
 
           this.storage.set('detalleMateriasCu', this.notasCu)
           this.promedio()
+  
           this.crearNota.dismiss(null, 'confirm');
         } else {
           this.notasCu.push({
