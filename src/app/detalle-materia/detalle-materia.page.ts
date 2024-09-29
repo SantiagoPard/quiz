@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormsModule, Validators, FormControl } from '@angular/forms';
 import { AppStorageService } from '../services/app-storage.service';
-import { arrowForwardOutline, alertCircleOutline, trashOutline } from 'ionicons/icons';
+import { arrowForwardOutline, alertCircleOutline, trashOutline, createOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import {
   IonContent,
@@ -73,17 +73,19 @@ export class DetalleMateriaPage implements OnInit {
   notasCu: any =[];
   notas: any = [];
 
-  promedioPve:any = 0;
+  promedioPve:number = 0;
   promedioSve:number = 0;
   promedioTve:number = 0;
   promedioCu:number = 0;
+
+  promedioTotal:number = 0;
 
 
   
   
   porcientoNota: number = 0;
   constructor(private storage: AppStorageService, private activatedRoute: ActivatedRoute) { 
-    addIcons({arrowForwardOutline,trashOutline,alertCircleOutline});
+    addIcons({arrowForwardOutline,trashOutline,createOutline,alertCircleOutline});
     
   }
 
@@ -101,8 +103,7 @@ export class DetalleMateriaPage implements OnInit {
       const id = params.get('id');
       if (id) {
         this.id = +id;
-        await this.datos();
-        
+        await this.datos(); 
       }
       this.promedio()
     });
@@ -117,28 +118,75 @@ export class DetalleMateriaPage implements OnInit {
     this.notasTve = await this.storage.get('detalleMateriasTve') ;
     this.notasCu = await this.storage.get('detalleMateriasCu') ;
 
-    console.log(await this.notasPve)
-
-    
   }
   promedio(){
-    let notasPve = []
-    notasPve =  this.notasPve.filter((nota:any)=>nota.id === this.id)
-    if(notasPve.length == 1){
-      this.promedioPve = notasPve[0]
-    }else if(notasPve.length > 1){
-      notasPve.forEach((element:any) => {
-        this.promedioPve += element.notaPve
-      
-      });
+    this.promedioTotal = 0;
+
+    let promedioP = this.notasPve?.filter((nota:any) => nota.id == this.id) ?? [];
+    let promedioS = this.notasSve?.filter((nota:any) => nota.id == this.id) ?? [];
+    let promedioT = this.notasTve?.filter((nota:any) => nota.id == this.id) ?? [];
+    let promedioC = this.notasCu?.filter((nota:any) => nota.id == this.id) ?? [];
+
+    
+
+    if(promedioP.length == 1){
+      this.promedioPve = promedioP[0]['notaPve']
+    }else if(promedioP.length > 1){
+      this.promedioPve = 0
+      promedioP.forEach((nota:any) => {
+        this.promedioPve += nota.notaPve
+  
+      })
+      this.promedioPve = this.promedioPve / promedioP.length
     }
-    this.promedioPve = this.promedioPve/notasPve.length
-    console.log(notasPve.length)
-  }
+   
+    if(promedioS.length == 1){
+      this.promedioSve = promedioS[0]['notaSve']
+    }else if(promedioS.length > 1){
+      this.promedioSve = 0
+      promedioS.forEach((nota:any) => {
+        this.promedioSve += nota.notaSve
+   
+      })
+      this.promedioSve = this.promedioSve / promedioS.length
+    }
+
+    if(promedioT.length == 1){
+      this.promedioTve = promedioT[0]['notaTve']
+    }else if(promedioT.length > 1){
+      this.promedioTve = 0
+      promedioS.forEach((nota:any) => {
+        this.promedioTve += nota.notaTve
+   
+      })
+      this.promedioTve = this.promedioTve / promedioT.length
+    }
+
+    if(promedioC.length == 1){
+      this.promedioCu = promedioC[0]['notaCu']
+    }else if(promedioC.length > 1){
+      this.promedioCu = 0
+      promedioC.forEach((nota:any) => {
+        this.promedioCu += nota.notaCu
+       
+      })
+      this.promedioCu = this.promedioCu / promedioC.length
+    }
+
+    this.promedioTotal = (this.promedioPve * 0.20) + (this.promedioSve * 0.20) + (this.promedioTve * 0.20) + (this.promedioCu * 0.40)
+    
+
+  this.notaFinal()
+    
+  } 
 
 
-
-
+async notaFinal(){
+  let notaFinalAct = await  this.storage.get('materia')
+  notaFinalAct[this.id].notaFinal = this.promedioTotal
+  this.storage.set('materia',notaFinalAct)
+  console.log(await this.storage.get('materia'))
+}
 
   crear() {
     const fechaEntrega = this.notaForm.get('fechaEntrega')?.value;
@@ -151,7 +199,7 @@ export class DetalleMateriaPage implements OnInit {
       case 1: {
         console.log("hola")
         if (this.notasPve == null) {
-          let detalleMateria =
+          this.notasPve =
             [{
               'id': this.id,
               'fechaEntrega': fechaEntrega,
@@ -159,11 +207,11 @@ export class DetalleMateriaPage implements OnInit {
               'notaPve': nota,
               'observacionesNota': observacionesNota
             }]
-
-          this.storage.set('detalleMateriasPve', detalleMateria)
-          this.promedio()
+       
+          
+          this.storage.set('detalleMateriasPve', this.notasPve)
           this.modal.dismiss(null, 'confirm');
-          location.reload()
+     
         }else{
           console.log('hola')
           this.notasPve.push({
@@ -174,8 +222,9 @@ export class DetalleMateriaPage implements OnInit {
             'observacionesNota': observacionesNota
           })
           this.storage.set('detalleMateriasPve', this.notasPve)
-          this.promedio()
           this.modal.dismiss(null, 'confirm');
+          this.promedio()
+        
 
         }
         break;
@@ -183,7 +232,7 @@ export class DetalleMateriaPage implements OnInit {
       case 2: {
         console.log("hola")
         if (this.notasSve == null) {
-          let detalleMateria =
+          this.notasSve =
             [{
               'id': this.id,
               'fechaEntrega': fechaEntrega,
@@ -192,9 +241,9 @@ export class DetalleMateriaPage implements OnInit {
               'observacionesNota': observacionesNota
             }]
 
-          this.storage.set('detalleMateriasSve', detalleMateria)
+          this.storage.set('detalleMateriasSve', this.notasSve)
           this.modal.dismiss(null, 'confirm');
-          location.reload()
+
         }else{
           this.notasSve.push({
             'id': this.id,
@@ -205,6 +254,7 @@ export class DetalleMateriaPage implements OnInit {
           })
           this.storage.set('detalleMateriasSve', this.notasSve)
           this.modal.dismiss(null, 'confirm');
+          this.promedio()
 
         }
         break;
@@ -212,7 +262,7 @@ export class DetalleMateriaPage implements OnInit {
       case 3: {
         console.log("hola")
         if (this.notasTve == null) {
-          let detalleMateria =
+          this.notasTve =
             [{
               'id': this.id,
               'fechaEntrega': fechaEntrega,
@@ -221,9 +271,9 @@ export class DetalleMateriaPage implements OnInit {
               'observacionesNota': observacionesNota
             }]
 
-          this.storage.set('detalleMateriasTve', detalleMateria)
+          this.storage.set('detalleMateriasTve', this.notasTve)
           this.modal.dismiss(null, 'confirm');
-          location.reload()
+  
         }else{
           this.notasTve.push({
             'id': this.id,
@@ -234,14 +284,14 @@ export class DetalleMateriaPage implements OnInit {
           })
           this.storage.set('detalleMateriasTve', this.notasTve)
           this.modal.dismiss(null, 'confirm');
-
+          this.promedio()
         }
         break;
       }
       case 4: {
         console.log("hola")
         if (this.notasCu== null) {
-          let detalleMateria =
+          this.notasCu =
             [{
               'id': this.id,
               'fechaEntrega': fechaEntrega,
@@ -250,9 +300,9 @@ export class DetalleMateriaPage implements OnInit {
               'observacionesNota': observacionesNota
             }]
 
-          this.storage.set('detalleMateriasCu', detalleMateria)
+          this.storage.set('detalleMateriasCu', this.notasCu)
           this.modal.dismiss(null, 'confirm');
-          location.reload()
+          this.promedio()
         }else{
           this.notasCu.push({
             'id': this.id,
@@ -263,6 +313,7 @@ export class DetalleMateriaPage implements OnInit {
           })
           this.storage.set('detalleMateriasCu', this.notasCu)
           this.modal.dismiss(null, 'confirm');
+          this.promedio()
         }
         break;
       }

@@ -59,14 +59,15 @@
 
                         <ion-col size="4">
 
-                            Semestre:
+                            Nota General:
                         </ion-col>
 
-                        <ion-col size="3">
-                            {{materia.semestreMat}}
-
+                        <ion-col size="3" *ngIf="promedioTotal < 3" style="background-color: red;">
+                            {{promedioTotal.toFixed(2)}}
                         </ion-col>
-
+                        <ion-col size="3" *ngIf="promedioTotal >= 3" style="background-color:green;">
+                            {{promedioTotal.toFixed(2)}}
+                        </ion-col>
                     </ion-row>
                 </ion-grid>
             </ion-item>
@@ -84,17 +85,17 @@
                         <ion-grid>
                             <ion-row>
 
-                                <ion-col size="3">
+                                <ion-col size="4">
+                                    {{nPve.fechaEntrega}}
+
+                                </ion-col>
+
+                                <ion-col size="2">
                                     {{nPve.notaPve}}
-
                                 </ion-col>
 
                                 <ion-col size="3">
-
-                                </ion-col>
-
-                                <ion-col size="3">
-                                    NOTA
+                                    {{nPve.descripcionNota}}
                                 </ion-col>
 
 
@@ -102,8 +103,8 @@
                                 <ion-col size="3">
 
                                     <ion-buttons style="display: flex; flex-direction: row;">
-                                        <ion-button router-direction="none"><ion-icon style="width: 30px; height: 30px;"
-                                                name="arrow-forward-outline"></ion-icon></ion-button>
+                                
+                                        <ion-button><ion-icon name="create-outline"></ion-icon></ion-button>
                                         <ion-button><ion-icon style="width: 60px; height: 60px;" style="color:red"
                                                 name="trash-outline"></ion-icon></ion-button>
 
@@ -118,8 +119,8 @@
                 </ion-list>
 
                
-                <ion-buttons slot="content" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; ">
-                    <div>{{promedioPve}}</div>
+                <ion-buttons slot="content" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div>Nota : {{promedioPve}}</div>
                     <ion-button (click)="addNote(1)" fill="solid" color="medium">añadir nota</ion-button>
                 </ion-buttons>
 
@@ -169,7 +170,8 @@
                 </ion-list>
 
          
-                <ion-buttons slot="content" style="justify-content: end;">
+                <ion-buttons slot="content" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div>Nota : {{promedioSve}}</div>
                     <ion-button (click)="addNote(2)" fill="solid" color="medium">añadir nota</ion-button>
                 </ion-buttons>
 
@@ -182,7 +184,7 @@
 
                 <ion-list slot="content" *ngFor="let nTve of notasTve">
 
-                    <ion-item>
+                    <ion-item *ngIf="nTve.id == id" >
                         <ion-grid>
                             <ion-row>
 
@@ -219,7 +221,8 @@
 
                 </ion-list>
 
-                <ion-buttons slot="content"  style="justify-content: end;">
+                <ion-buttons slot="content"  style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div>Nota : {{promedioTve}}</div>
                     <ion-button (click)="addNote(3)" fill="solid" color="medium">añadir nota</ion-button>
                 </ion-buttons>
 
@@ -232,7 +235,7 @@
 
                 <ion-list slot="content" *ngFor="let nCu of notasCu">
 
-                    <ion-item>
+                    <ion-item *ngIf="nCu.id == id" >
                         <ion-grid>
                             <ion-row>
 
@@ -270,7 +273,8 @@
                 </ion-list>
 
 
-                <ion-buttons slot="content"  style="justify-content: end;">
+                <ion-buttons slot="content"  style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div>Nota : {{promedioCu}}</div>
                     <ion-button (click)="addNote(4)" fill="solid" color="medium">añadir nota</ion-button>
                 </ion-buttons>
 
@@ -278,7 +282,7 @@
 
             </ion-accordion>
         </ion-accordion-group>
-<p>hoal</p>
+
 
         <ion-modal trigger="open-modal">
             <ng-template>

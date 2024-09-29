@@ -9,8 +9,25 @@ ion-col {
   }
   #colNoPaso{
     background-color: rgba($color: #ff0000, $alpha: .7);
+    justify-content: center;
+    text-align: center;
   }
 
   #colPaso{
-    background-color: green;
+    justify-content: center;
+  background-color: green;
   }
+
+  ion-col{
+    text-align: center;
+    
+  }
+
+#div-results{
+  z-index: 1000;
+  position: absolute;
+  top: 12%;
+  left: 5%;
+  width: 90%;
+  border: solid 1px #ffffff;
+}

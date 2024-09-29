@@ -1,4 +1,4 @@
-import { arrowForwardOutline, alertCircleOutline, trashOutline } from 'ionicons/icons';
+import { arrowForwardOutline, alertCircleOutline, trashOutline, createOutline } from 'ionicons/icons';
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -25,16 +25,14 @@ import {
   IonButton,
   IonModal, 
   IonInput, 
-  IonTextarea,
-  
-} from '@ionic/angular/standalone';
+  IonTextarea, IonCardHeader, IonCardSubtitle, IonCard, IonCardContent, IonCardTitle } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonCardTitle, IonCardContent, IonCard, IonCardSubtitle, IonCardHeader, 
     IonTextarea, 
     IonInput, 
     IonButton, 
@@ -67,19 +65,41 @@ import {
 export class HomePage implements OnInit {
 
   constructor( private storage: AppStorageService) { 
-    addIcons({arrowForwardOutline,trashOutline,alertCircleOutline});
+    addIcons({arrowForwardOutline,trashOutline,createOutline,alertCircleOutline});
   }
+
   
   mats:any = []
+
+  index:any = []
+  results:any = [];
+
+  handleInput(event: any) {
+    const query = event.target.value.toLowerCase();
+    this.results = this.mats
+      .map((mat: any, index: any) => ({ ...mat, index }))
+      .filter((d: any) => d.nombreMateria.toLowerCase().indexOf(query) > -1);
+
+      console.log(this.results)
+    if (query === '') {
+      console.log('query vacio');
+      this.results = [];
+    }
+  }
+
+
 
   ngOnInit() {
     this.datos()  
   }
 
-  async datos(){
-    this.mats = await this.storage.get('materia')
+  ionViewWillEnter() {
+    this.datos();
   }
-  
+
+  async datos(){
+    this.mats = await this.storage.get('materia') || [];
+  }
   indexMat(i:number){
     this.storage.set('matActual',i)
   }
