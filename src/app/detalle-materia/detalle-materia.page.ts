@@ -71,7 +71,7 @@ export class DetalleMateriaPage implements OnInit {
   notasSve:any = [];
   notasTve: any =[];
   notasCu: any =[];
-  notas: any = [];
+
 
   promedioPve:number = 0;
   promedioSve:number = 0;

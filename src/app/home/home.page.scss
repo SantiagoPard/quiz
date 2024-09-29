@@ -24,6 +24,7 @@ ion-col {
   }
 
 #div-results{
+  visibility: hidden;
   z-index: 1000;
   position: absolute;
   top: 12%;

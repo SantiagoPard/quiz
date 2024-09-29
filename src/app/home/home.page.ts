@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule,FormGroup, FormsModule, Validators, FormControl } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
 import { AppStorageService } from '../services/app-storage.service';
 import { addIcons } from 'ionicons';
 import { 
@@ -25,7 +26,12 @@ import {
   IonButton,
   IonModal, 
   IonInput, 
-  IonTextarea, IonCardHeader, IonCardSubtitle, IonCard, IonCardContent, IonCardTitle } from '@ionic/angular/standalone';
+  IonTextarea, 
+  IonCardHeader, 
+  IonCardSubtitle, 
+  IonCard, 
+  IonCardContent, 
+  IonCardTitle } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
@@ -64,7 +70,7 @@ import {
 })
 export class HomePage implements OnInit {
 
-  constructor( private storage: AppStorageService) { 
+  constructor( private storage: AppStorageService,private alertController: AlertController ) { 
     addIcons({arrowForwardOutline,trashOutline,createOutline,alertCircleOutline});
   }
 
@@ -74,13 +80,27 @@ export class HomePage implements OnInit {
   index:any = []
   results:any = [];
 
+  notasPve: any =[];
+  notasSve:any = [];
+  notasTve: any =[];
+  notasCu: any =[];
+
+  
+
+
+  idMatMod:number = 0;
+
   handleInput(event: any) {
+   if(document.getElementById('div-results') != null){
+    document.getElementById('div-results')!.style.visibility = 'visible';
+   }
     const query = event.target.value.toLowerCase();
     this.results = this.mats
       .map((mat: any, index: any) => ({ ...mat, index }))
       .filter((d: any) => d.nombreMateria.toLowerCase().indexOf(query) > -1);
 
       console.log(this.results)
+
     if (query === '') {
       console.log('query vacio');
       this.results = [];
@@ -99,28 +119,51 @@ export class HomePage implements OnInit {
 
   async datos(){
     this.mats = await this.storage.get('materia') || [];
+    
+    this.notasPve = await this.storage.get('detalleMateriasPve') ;
+    this.notasSve = await this.storage.get('detalleMateriasSve') ;
+    this.notasTve = await this.storage.get('detalleMateriasTve') ;
+    this.notasCu = await this.storage.get('detalleMateriasCu') ;
+
   }
   indexMat(i:number){
     this.storage.set('matActual',i)
   }
 
   // toggleMenu(){}
-  @ViewChild(IonModal) modal!: IonModal;
+  @ViewChild('crearMateria') modal!: IonModal;
+  @ViewChild('editModal') editModal!: IonModal;
 
-
+  
   cancel() {
 
     this.modal.dismiss(null, 'cancel');
   console.log(this.mats)
   }
 
-  // confirm() {
-  //   this.modal.dismiss(null, 'confirm');
-  // }
+  cancelEditar(){
+    this.editModal.dismiss(null, 'cancel');
+  }
+
+  async editar(i:number){
+    this.idMatMod = i
+    const selectedMateria = this.mats[i]
+ 
+    console.log(selectedMateria['codigoMateria'])
+    this.materiaForm.patchValue({
+      nombreMateria: selectedMateria.nombreMateria,
+      semestreMat: selectedMateria.semestreMat,
+      codigoMateria: selectedMateria.codigoMateria,
+      horarioMateria: selectedMateria.horarioMateria,
+      observacionesMateria: selectedMateria.observacionesMateria
+    });
+    this.editModal.present()
+  }
+
   
   materiaForm = new FormGroup({
     nombreMateria: new FormControl('',[Validators.required]),
-    semestreMat: new FormControl('',[Validators.required]),
+    semestreMat: new FormControl(1,[Validators.required,Validators.min(1)]),
     codigoMateria: new FormControl('',[Validators.required]),
     horarioMateria: new FormControl('',[Validators.required]),
     observacionesMateria: new FormControl('',[Validators.required])
@@ -128,6 +171,23 @@ export class HomePage implements OnInit {
   
 
 
+  Modificar(){
+    const nombreMateria = this.materiaForm.get('nombreMateria')?.value;
+    const semestreMat = this.materiaForm.get('semestreMat')?.value;
+    const codigoMateria = this.materiaForm.get('codigoMateria')?.value;
+    const horarioMateria = this.materiaForm.get('horarioMateria')?.value;
+    const observacionesMateria = this.materiaForm.get('observacionesMateria')?.value;
+
+    this.mats[this.idMatMod].nombreMateria = nombreMateria
+    this.mats[this.idMatMod].semestreMat = semestreMat
+    this.mats[this.idMatMod].codigoMateria = codigoMateria
+    this.mats[this.idMatMod].horarioMateria = horarioMateria
+    this.mats[this.idMatMod].observacionesMateria = observacionesMateria
+      
+
+    this.storage.set('materia',this.mats)
+    this.editModal.dismiss(null, 'confirm');
+  }
   crear(){
     const nombreMateria = this.materiaForm.get('nombreMateria')?.value;
     const semestreMat = this.materiaForm.get('semestreMat')?.value;
@@ -168,4 +228,43 @@ export class HomePage implements OnInit {
     this.modal.dismiss(null, 'confirm');
   }
 
+  eliminar(i:number){
+   
+    let notasPve = this.notasPve?.filter((nota:any)=>nota.id == i) || []
+    let notasSve = this.notasSve?.filter((nota:any)=>nota.id == i) || []
+    let notasTve = this.notasTve?.filter((nota:any)=>nota.id == i) || []
+    let notasCu = this.notasCu?.filter((nota:any)=>nota.id == i) || []
+
+   
+    if(notasPve.length == 0 && notasSve.length == 0 && notasTve.length == 0 && notasCu.length == 0){
+      this.presentAlertWithoutNotes(i)
+    }else{
+      this.presentAlertWithNotes()
+    }
+  }
+  
+  async presentAlertWithNotes() {
+
+    const alert = await this.alertController.create({
+      header: 'No se puede eliminar una materia con notas',
+      message: 'Para borrar una materia con notas, primero borra las notas de la materia',
+      buttons: ['Ok'],
+    });
+
+    await alert.present();
+  }
+
+  async presentAlertWithoutNotes(i:number) {
+
+    const alert = await this.alertController.create({
+      header: 'Estas seguro que deseas eliminar esta materia?',
+      message: 'Si quieres eliminar la materia, presiona confirmar',
+      buttons: [{text:'Cancelar',role:'cancel'},{text:'confirmar',role:'ok',handler:()=>{
+        this.mats.splice(i,1)
+        this.storage.set('materia',this.mats)
+      }}],
+    });
+
+    await alert.present();
+  }
 }
